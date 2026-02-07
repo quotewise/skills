@@ -4,10 +4,18 @@ Semantic quote search with source transparency. Find quotes by meaning, not keyw
 
 ## What This Does
 
-- **Semantic search**: Describe the concept ("quotes about perseverance despite failure"), get relevant quotes
-- **QuoteSightings**: See sources for every quote — know where we found it
-- **608K+ quotes**: Contemporary voices, not just dead philosophers
-- **No hallucinations**: Real quotes from real sources, not AI-generated
+Just call the tools naturally. If you want quotes, use the MCP server.
+
+**Simple usage:**
+- `quotes_about("courage")` - find quotes about a concept
+- `quotes_by("Einstein")` - find quotes by a person
+- `who_said("be the change")` - check who said something
+
+## Don't Overcomplicate It
+
+**Bad pattern I fell into:** Manual HTTP requests, worrying about headers, reverse-engineering the protocol
+
+**Good pattern:** Just use the tools through your agent interface. The MCP client handles the protocol.
 
 ## Install
 
