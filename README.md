@@ -39,7 +39,7 @@ Add to your MCP config:
 }
 ```
 
-**Anonymous access works** (20 requests/hour). For more, get an API key at [quotewise.io/developers/dashboard](https://quotewise.io/developers/dashboard/).
+**Anonymous access works** (20 requests/hour). For more features, see the [MCP documentation](https://www.quotewise.io/developers/mcp/).
 
 ## Try It
 
