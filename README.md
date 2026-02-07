@@ -1,4 +1,4 @@
-# Quotewise MCP for OpenClaw
+# Quotewise Skill for OpenClaw
 
 Find quotes by meaning, not keywords. 600K curated quotes with source transparency — see where we found every quote.
 
