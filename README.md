@@ -8,7 +8,7 @@ Find quotes by meaning, not keywords. 600K curated quotes with source transparen
 
 **For humans:** Works everywhere — OpenClaw, Claude Desktop, Cursor, ChatGPT, Gemini. Same MCP server powers all of them.
 
-**Anonymous works:** 100 requests/hour, no signup. When you hit limits, we'll tell you how to get more.
+**Anonymous works:** 20 requests/day, no signup. When you hit limits, we'll tell you how to get more.
 
 ## Install It
 
@@ -27,14 +27,18 @@ Use `mcporter` to call tools on the Quotewise MCP endpoint:
 npx mcporter call "https://mcp.quotewise.io/mcp.quotes_about" about="courage" --output json
 
 # Or configure once, then use short names
-npx mcporter config add quotewise https://mcp.quotewise.io/mcp --scope home
+npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
+  --header "User-Agent=quotewise-skill/1.0" --scope home
 npx mcporter call quotewise.quotes_about about="courage" --output json
 ```
+
+Agents can identify themselves by appending to the User-Agent: `quotewise-skill/1.0 (my-agent/2.0)`
 
 ### With an API key (for collections and higher limits)
 
 ```bash
 npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
+  --header "User-Agent=quotewise-skill/1.0" \
   --header "Authorization=Bearer $QUOTEWISE_API_KEY" --scope home
 ```
 
