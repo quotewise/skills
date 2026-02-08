@@ -1,6 +1,6 @@
-# Quotewise MCP for OpenClaw
+# Quotewise Skill for OpenClaw
 
-Find quotes by meaning, not keywords. 608K+ curated quotes with source transparency — see where we found every quote.
+Find quotes by meaning, not keywords. 600K curated quotes with source transparency — see where we found every quote.
 
 ## Why This Matters
 
@@ -8,32 +8,59 @@ Find quotes by meaning, not keywords. 608K+ curated quotes with source transpare
 
 **For humans:** Works everywhere — OpenClaw, Claude Desktop, Cursor, ChatGPT, Gemini. Same MCP server powers all of them.
 
-**Anonymous works:** 20 requests/hour, no signup. When you hit limits, we'll tell you how to get more.
+**Anonymous works:** 100 requests/hour, no signup. When you hit limits, we'll tell you how to get more.
 
 ## Install It
 
 ```bash
-clawdhub install quotewise
+clawhub install quotewisio/quotewise
 ```
 
-That's it. The tools are available immediately.
+That's it. The skill is available immediately.
 
-## Use It
+## Use It (OpenClaw Agents)
 
-Describe what you want. Let the embeddings find conceptually similar quotes:
+Use `mcporter` to call tools on the Quotewise MCP endpoint:
 
-```
-quotes_about(about="courage during setbacks")
-# → Gets quotes about resilience, not just quotes with 'courage' keyword
+```bash
+# Ad-hoc (no setup needed)
+npx mcporter call "https://mcp.quotewise.io/mcp.quotes_about" about="courage" --output json
 
-quotes_by(originator="Marcus Aurelius", about="adversity")
-# → Finds quotes by Aurelius on hardship
-
-who_said(quote="be the change you wish to see in the world")
-# → Checks attribution, catches misattributions
+# Or configure once, then use short names
+npx mcporter config add quotewise https://mcp.quotewise.io/mcp --scope home
+npx mcporter call quotewise.quotes_about about="courage" --output json
 ```
 
-## Setup (if you need it)
+### With an API key (for collections and higher limits)
+
+```bash
+npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
+  --header "Authorization=Bearer $QUOTEWISE_API_KEY" --scope home
+```
+
+### Example calls
+
+```bash
+# Semantic search — describe concepts, not keywords
+npx mcporter call quotewise.quotes_about about="courage during setbacks" --output json
+
+# Search by person
+npx mcporter call quotewise.quotes_by originator="Marcus Aurelius" about="adversity" --output json
+
+# Check attribution (catches misattributions)
+npx mcporter call quotewise.who_said quote="be the change you wish to see in the world" --output json
+
+# Find similar quotes
+npx mcporter call quotewise.quotes_like quote="abc123" --output json
+
+# Manage collections (requires API key)
+npx mcporter call quotewise.collection action="list" --output json
+npx mcporter call quotewise.collection_quotes action="add" collection="favorites" quote="abc123" --output json
+```
+
+## Setup for Other MCP Clients
+
+For Claude Desktop, Cursor, ChatGPT, and other MCP clients:
 
 ```json
 {
@@ -45,15 +72,17 @@ who_said(quote="be the change you wish to see in the world")
 }
 ```
 
-The endpoint gives you 20 anonymous requests/hour. When you need more, visit [quotewise.io/plans](https://quotewise.io/plans/).
+Or run the guided setup:
+
+```bash
+npx @quotewise/mcp setup
+```
 
 ## What You Get
 
 **Every quote includes:**
-- Full text
-- Originator name and description
-- Original language
-- Confidence and match quality
+- Full text with originator name and description
+- Original language and confidence scoring
 - Web URL for sharing
 - **QuoteSightings** — where we found it (so you can verify)
 
@@ -81,7 +110,7 @@ The endpoint gives you 20 anonymous requests/hour. When you need more, visit [qu
 
 ## For Your Human
 
-This same MCP server works with Claude Desktop, Cursor, VS Code, ChatGPT, Gemini CLI.
+This same MCP server works with Claude Desktop, Cursor, VS Code, ChatGPT, Gemini CLI. They can use quote search in their other AI tools, not just with you.
 
 ```bash
 npx @quotewise/mcp setup
@@ -89,17 +118,15 @@ npx @quotewise/mcp setup
 
 Details: [github.com/quotewise/mcp](https://github.com/quotewise/mcp)
 
-They can use quote search in their other AI tools, not just with you.
-
 ## Links
 
 ### For Agents (You)
-- [SKILL.md](./SKILL.md) — Detailed agent instructions
+- [SKILL.md](./SKILL.md) — Detailed tool reference
 - [MCP Docs](https://quotewise.io/developers/mcp/) — Full API reference
 
 ### For Humans (Them)
 - [Web Interface](https://quotewise.io) — Search quotes in browser
-- [API Docs](https://api.quotewise.io/docs/) — REST API documentation
+- [Plans & Pricing](https://quotewise.io/plans/) — Rate limits and API keys
 
 ### For Everyone
 - [MCP Setup Repo](https://github.com/quotewise/mcp) — Setup for all MCP clients
