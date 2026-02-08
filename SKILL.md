@@ -23,7 +23,8 @@ npx mcporter call "https://mcp.quotewise.io/mcp.<tool>" key=value --output json
 Configure the server once so you can use short names:
 
 ```bash
-npx mcporter config add quotewise https://mcp.quotewise.io/mcp --scope home
+npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
+  --header "User-Agent=quotewise-skill/1.0" --scope home
 ```
 
 Then call tools as:
@@ -32,12 +33,15 @@ Then call tools as:
 npx mcporter call quotewise.<tool> key=value --output json
 ```
 
+Agents can identify themselves by appending to the User-Agent: `quotewise-skill/1.0 (my-agent/2.0)`
+
 ### With authentication
 
 If `QUOTEWISE_API_KEY` is set, pass it during config:
 
 ```bash
 npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
+  --header "User-Agent=quotewise-skill/1.0" \
   --header "Authorization=Bearer $QUOTEWISE_API_KEY" --scope home
 ```
 
@@ -45,7 +49,7 @@ This enables collections and higher rate limits.
 
 ### Without authentication
 
-Anonymous access works — 100 requests/hour, no signup needed.
+Anonymous access works — 20 requests/day, no signup needed.
 
 ## Core Tools
 
