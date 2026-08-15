@@ -3,7 +3,7 @@
   "name": "quotewise",
   "displayName": "Quotewise",
   "version": "1.0.0",
-  "description": "Finds verified quotes and checks attributions via Quotewise. Use when the user asks for a quote, wants attribution, asks who said a line, suspects a quote is misattributed, or half-remembers a phrase.",
+  "description": "Agent Skill for verified quotes via Quotewise MCP (or CLI when MCP is absent). Use when the user asks for a quote, wants attribution, asks who said a line, suspects a quote is misattributed, or half-remembers a phrase.",
   "author": {
     "name": "Christopher Q. Alexander",
     "email": "q@quotewise.io",

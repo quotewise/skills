@@ -1,6 +1,6 @@
 # Quotewise skill evals
 
-These cases check that the skill **changes behavior**: with the skill, Claude must use Quotewise and cite a real result. Without the skill, it is expected to web-search or invent, and to fail the “sourced from Quotewise” graders.
+These cases check that the skill **changes behavior**: with the skill, the agent must use Quotewise and cite a real result. Without the skill, it is expected to web-search or invent, and to fail the “sourced from Quotewise” graders.
 
 Prompts are human-written and outcome-focused. They do **not** name the skill or tell the agent which tool to call.
 

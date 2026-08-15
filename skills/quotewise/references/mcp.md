@@ -9,8 +9,8 @@ Live tool list: [MCP docs](https://quotewise.io/developers/mcp/). This file list
 ## Auth
 
 1. **Anonymous** — works with no login (20 requests/day).
-2. **OAuth** — preferred when the client offers it. In Claude Code, connect via `/mcp` and complete the login prompt.
-3. **`QUOTEWISE_API_KEY`** — fallback if OAuth is unavailable. Export it in the environment; do not commit it. Adding `Authorization: Bearer ${QUOTEWISE_API_KEY}` to a *user* MCP config is fine. Do not add that header to this plugin's `.mcp.json` (an empty/missing key disables OAuth).
+2. **OAuth** — preferred when the client offers it. Complete the client's login prompt (for example `/mcp` in Claude Code).
+3. **`QUOTEWISE_API_KEY`** — fallback if OAuth is unavailable. Export it in the environment; do not commit it. Adding `Authorization: Bearer ${QUOTEWISE_API_KEY}` to a *user* MCP config is fine. Do not add that header to this repo's `.mcp.json` (an empty/missing key disables OAuth in the Claude adapter).
 
 Collections create/list/add and some `detailed` fields need auth. If a call returns auth or rate-limit errors, tell the user to finish OAuth, set `QUOTEWISE_API_KEY`, or see [plans](https://quotewise.io/plans/).
 
