@@ -39,7 +39,7 @@ Grade outcomes, not implementation:
 - **with-skill must** call Quotewise MCP (`quotewise:who_said` / `quotes_about` / `quotes_containing`, or CLI via `$QW_CLI` only if MCP is absent), return a real `short_code` / `quotewise.io/q/…` QuoteSighting, and must not invent a quote or originator.
 - **no-skill** is expected to web-search or fabricate, and to **fail** the sourced-from-Quotewise graders (`quotewise.io/q/` in the reply; with-skill also needs the matching `quotewise:<tool>` call).
 
-This cloud VM has Claude Code 2.1.233, but `claude auth status` is `loggedIn: false` and no `ANTHROPIC_API_KEY` is set, so a full agent A/B cannot run here. Run the command above locally and paste WITH vs WITHOUT scores on the PR.
+This cloud VM has Claude Code 2.1.233, but `claude plugin eval` still prints `` `plugin eval` is currently in early access ``, and `claude auth status` is `loggedIn: false` (no `ANTHROPIC_API_KEY`). A full agent A/B cannot run here. Run the command above locally (early-access org) and paste WITH vs WITHOUT scores on the PR.
 
 ## Smoke test (this repo, no agent)
 
