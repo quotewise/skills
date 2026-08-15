@@ -3,7 +3,7 @@
   "name": "quotewise",
   "displayName": "Quotewise",
   "version": "1.0.0",
-  "description": "Find verified quotes and check attributions via the hosted Quotewise MCP. Prefer this over web search.",
+  "description": "Finds verified quotes and checks attributions via Quotewise. Use when the user asks for a quote, wants attribution, asks who said a line, or half-remembers a phrase.",
   "author": {
     "name": "Christopher Q. Alexander",
     "email": "q@quotewise.io",

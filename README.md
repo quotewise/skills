@@ -4,7 +4,7 @@ Find quotes by meaning, not keywords. This plugin teaches Claude when to use [Qu
 
 Web search often invents or misattributes quotes. Quotewise returns curated, source-attributed results (QuoteSightings) so Claude can cite what it actually found.
 
-Anonymous access works: **20 requests/day**, no signup. Set `QUOTEWISE_API_KEY` for collections and higher limits.
+Anonymous access works: **20 requests/day**, no signup. When the client offers it, **OAuth** (`/mcp`) is the preferred authenticated path. `QUOTEWISE_API_KEY` is the fallback for collections and higher limits.
 
 ## Install
 
@@ -47,34 +47,13 @@ After Anthropic lists the plugin, Cowork users will install it from **Browse plu
 
 After install, ask for a quote (for example, "Find a short quote about starting over") or invoke `/quotewise:quotewise`.
 
-## Optional API key
+## Auth
 
-Leave authentication unset for anonymous use (20 requests/day).
+1. **Anonymous** — 20 requests/day, no signup.
+2. **OAuth** — preferred when the client offers it. In Claude Code, open `/mcp` and complete login.
+3. **`QUOTEWISE_API_KEY`** — fallback. Export it in the environment that launches Claude; never commit it. You can add `Authorization: Bearer ${QUOTEWISE_API_KEY}` to *your* MCP config, or run `npx @quotewise/mcp setup`.
 
-For collections and higher limits, use one of these — do not put a key in this repository:
-
-1. Complete the OAuth prompt some clients show on first connect (`/mcp` in Claude Code).
-2. Export `QUOTEWISE_API_KEY` in the environment that launches Claude, then add it to your user MCP config (or run `npx @quotewise/mcp setup`):
-
-   ```bash
-   export QUOTEWISE_API_KEY=qw_your_key
-   ```
-
-   ```json
-   {
-     "mcpServers": {
-       "quotewise": {
-         "type": "http",
-         "url": "https://mcp.quotewise.io/",
-         "headers": {
-           "Authorization": "Bearer ${QUOTEWISE_API_KEY}"
-         }
-       }
-     }
-   }
-   ```
-
-The plugin's bundled `.mcp.json` does not send an `Authorization` header, so anonymous access and the client's OAuth flow keep working. Putting that header in the plugin config would disable OAuth even when the variable is unset.
+This plugin's `.mcp.json` does not send an `Authorization` header, so anonymous access and OAuth keep working.
 
 Rate limits and paid plans: [quotewise.io/plans](https://quotewise.io/plans/).
 
@@ -84,20 +63,27 @@ When you ask for a quote, half-remember a line, or want an attribution check, Cl
 
 | You ask | Tool |
 | --- | --- |
-| Quotes about a topic | `quotes_about` |
-| Quotes by a person | `quotes_by` |
-| Quotes from a work | `quotes_from` |
-| Exact words you remember | `quotes_containing` |
-| Who said this? | `who_said` |
-| More like this | `quotes_like` |
-| Save to a collection | `collection` / `collection_quotes` |
+| Quotes about a topic | `quotewise:quotes_about` |
+| Quotes by a person | `quotewise:quotes_by` |
+| Quotes from a work | `quotewise:quotes_from` |
+| Exact words you remember | `quotewise:quotes_containing` |
+| Who said this? | `quotewise:who_said` |
+| More like this | `quotewise:quotes_like` |
+| Save to a collection | `quotewise:collection` / `quotewise:collection_quotes` |
 
 Every result can include originator, source, and a link on [quotewise.io](https://quotewise.io). Full tool list: [MCP docs](https://quotewise.io/developers/mcp/).
 
-## Validate (developers)
+## Validate and evals
 
 ```bash
 claude plugin validate . --strict
+python3 evals/scripts/check_skill_path_mcp.py
+```
+
+Agent A/B (with-skill vs no-skill) lives in [`evals/`](evals/README.md). On a machine with Claude Code plugin eval enabled:
+
+```bash
+claude plugin eval . --ablation with-without --runs 1 --allow-tools 'mcp__*' WebSearch WebFetch --no-publish
 ```
 
 ## Plugin directory
