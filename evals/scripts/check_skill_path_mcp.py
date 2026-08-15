@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""Smoke-test the three skill-path MCP tools against the hosted server.
+"""Smoke-test skill-path MCP calls and grade a no-skill baseline.
 
-Anonymous. No secrets. Exit 0 only if each call returns a short_code and web_url.
+Anonymous. No secrets.
+
+With-skill: each hosted MCP call must return a short_code and web_url.
+No-skill: canned replies (memory / invented attribution) must fail the
+sourced-from-Quotewise check (no quotewise.io/q/ link).
 """
 
 from __future__ import annotations
@@ -117,7 +121,18 @@ def main() -> int:
     except urllib.error.HTTPError:
         pass
 
+    # Memory / web-search style replies. Not sourced from Quotewise.
+    no_skill_replies = {
+        "attribution-trap": 'Gandhi said "Be the change you wish to see in the world."',
+        "semantic-find": 'Try "Fall seven times, stand up eight" — Japanese proverb.',
+        "half-remembered": (
+            "Franklin D. Roosevelt said the only thing we have to fear is fear itself "
+            "(first inaugural, 1933)."
+        ),
+    }
+
     failed = 0
+    print("== with-skill (hosted MCP) ==")
     for i, case in enumerate(CASES, start=2):
         raw, session = mcp_request(
             {
@@ -140,6 +155,15 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001 — report and continue
             failed += 1
             print(f"FAIL {case['name']} {case['tool']}: {exc}", file=sys.stderr)
+
+    print("== no-skill (expected fail: no Quotewise citation) ==")
+    for name, reply in no_skill_replies.items():
+        sourced = "quotewise.io/q/" in reply
+        if sourced:
+            failed += 1
+            print(f"FAIL {name}: no-skill reply unexpectedly cited Quotewise")
+        else:
+            print(f"PASS {name}: no quotewise.io/q/ (fails sourced-from-Quotewise)")
     return 1 if failed else 0
 
 

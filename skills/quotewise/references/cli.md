@@ -1,6 +1,6 @@
 # Quotewise CLI (when MCP is absent)
 
-Use the CLI only when Quotewise MCP tools are **not** in this session — scripts, CI, or non-Claude agents. If `quotewise:…` tools are available, use MCP instead. → READ [mcp.md](mcp.md)
+Use the CLI only when Quotewise MCP tools are **not** in this session — scripts, CI, or non-Claude agents. If `quotewise:…` tools are available, stop and use MCP instead (do not invent CLI flags to duplicate a live MCP tool).
 
 ## Resolve the binary
 
