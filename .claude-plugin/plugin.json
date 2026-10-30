@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "quotewise",
   "displayName": "Quotewise",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Agent Skill for verified quotes via Quotewise MCP (or CLI when MCP is absent). Use when the user asks for a quote, wants attribution, asks who said a line, suspects a quote is misattributed, or half-remembers a phrase.",
   "author": {
     "name": "Christopher Q. Alexander",
