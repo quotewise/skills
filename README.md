@@ -1,142 +1,113 @@
-# Quotewise Skill for OpenClaw
+# Quotewise Agent Skill
 
-Find quotes by meaning, not keywords. 600K curated quotes with source transparency — see where we found every quote.
+Agent Skill for verified quotes via [Quotewise](https://quotewise.io) MCP (or CLI when MCP is not in the session).
 
-## Why This Matters
+Web search often invents or misattributes quotes. Quotewise returns curated, source-attributed results (QuoteSightings) so the agent can cite what it actually found.
 
-**For agents:** When users ask for quotes, web search hallucinates sources. We give verified attributions with source citations (QuoteSightings).
+Anonymous access works: **20 requests/day**, no signup. When the client offers it, **OAuth** is the preferred authenticated path. `QUOTEWISE_API_KEY` is the fallback for collections and higher limits.
 
-**For humans:** Works everywhere — OpenClaw, Claude Desktop, Cursor, ChatGPT, Gemini. Same MCP server powers all of them.
+## Use in any Agent Skills client
 
-**Anonymous works:** 20 requests/day, no signup. When you hit limits, we'll tell you how to get more.
+Point the client at `skills/quotewise/`. Any environment that understands Agent Skills (`SKILL.md` frontmatter + progressive disclosure) can load it. Other clients that load `SKILL.md` work the same way: connect the hosted MCP at `https://mcp.quotewise.io/`, or use the CLI when MCP is not in the session.
 
-## Install It
-
-```bash
-clawhub install quotewisio/quotewise
+```
+skills/quotewise/
+  SKILL.md
+  references/mcp.md
+  references/cli.md
 ```
 
-That's it. The skill is available immediately.
-
-## Use It (OpenClaw Agents)
-
-Use `mcporter` to call tools on the Quotewise MCP endpoint:
-
-```bash
-# Ad-hoc (no setup needed)
-npx mcporter call "https://mcp.quotewise.io/mcp.quotes_about" about="courage" --output json
-
-# Or configure once, then use short names
-npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
-  --header "User-Agent=quotewise-skill/1.0" --scope home
-npx mcporter call quotewise.quotes_about about="courage" --output json
-```
-
-Agents can identify themselves by appending to the User-Agent: `quotewise-skill/1.0 (my-agent/2.0)`
-
-### With an API key (for collections and higher limits)
-
-```bash
-npx mcporter config add quotewise https://mcp.quotewise.io/mcp \
-  --header "User-Agent=quotewise-skill/1.0" \
-  --header "Authorization=Bearer $QUOTEWISE_API_KEY" --scope home
-```
-
-### Example calls
-
-```bash
-# Semantic search — describe concepts, not keywords
-npx mcporter call quotewise.quotes_about about="courage during setbacks" --output json
-
-# Search by person
-npx mcporter call quotewise.quotes_by originator="Marcus Aurelius" about="adversity" --output json
-
-# Check attribution (catches misattributions)
-npx mcporter call quotewise.who_said quote="be the change you wish to see in the world" --output json
-
-# Find similar quotes
-npx mcporter call quotewise.quotes_like quote="abc123" --output json
-
-# Manage collections (requires API key)
-npx mcporter call quotewise.collection action="list" --output json
-npx mcporter call quotewise.collection_quotes action="add" collection="favorites" quote="abc123" --output json
-```
-
-## Setup for Other MCP Clients
-
-For Claude Desktop, Cursor, ChatGPT, and other MCP clients:
-
-```json
-{
-  "mcpServers": {
-    "quotewise": {
-      "url": "https://mcp.quotewise.io/"
-    }
-  }
-}
-```
-
-Or run the guided setup:
+Optional MCP setup (any MCP client):
 
 ```bash
 npx @quotewise/mcp setup
 ```
 
-## What You Get
+## Claude Code / Cowork (one packaged install)
 
-**Every quote includes:**
-- Full text with originator name and description
-- Original language and confidence scoring
-- Web URL for sharing
-- **QuoteSightings** — where we found it (so you can verify)
+`.claude-plugin/plugin.json` and `.mcp.json` are an install adapter. They are not the whole product.
 
-**Filters to narrow results:**
-- Length: brief/short/medium/long/passage
-- Reading level: elementary to college
-- Content rating: G to R
-- Language: multi-language support
-- Structure: prose/verse/one-liner
-- Max chars: for Twitter (280), Threads (500), etc.
+### Claude Code
 
-## Example Queries
-
-**For inspiration:**
-- "Find me a short quote about starting over"
-- "Quotes by women about leadership"
-
-**For attribution:**
-- "Who actually said 'be the change'?"
-- "Did Einstein really say that about imagination?"
-
-**For specific contexts:**
-- "Something for a tweet about persistence (max 280 chars)"
-- "Quotes about failure from tech founders"
-
-## For Your Human
-
-This same MCP server works with Claude Desktop, Cursor, VS Code, ChatGPT, Gemini CLI. They can use quote search in their other AI tools, not just with you.
+From a clone of this repo (or this PR branch):
 
 ```bash
-npx @quotewise/mcp setup
+claude --plugin-dir .
 ```
 
-Details: [github.com/quotewise/mcp](https://github.com/quotewise/mcp)
+From a hosted zip of a branch:
+
+```bash
+claude --plugin-url https://github.com/quotewise/skills/archive/refs/heads/<branch>.zip
+```
+
+Reload with `/reload-plugins` if the install summary asks you to. Confirm the server with `/mcp`.
+
+You can also add the hosted server without the adapter:
+
+```bash
+claude mcp add --transport http quotewise https://mcp.quotewise.io/
+```
+
+### Claude Cowork
+
+1. Open the **Cowork** tab, then **Customize** → **Plugins**.
+2. Upload this repository (or a zip of the branch) as a custom plugin.
+
+After Anthropic lists the adapter, Cowork users will install it from **Browse plugins** instead.
+
+After install, ask for a quote (for example, "Find a short quote about starting over") or invoke `/quotewise:quotewise`.
+
+Listing at [https://platform.claude.com/plugins/submit](https://platform.claude.com/plugins/submit) is a later step. This repository does not submit anything to Anthropic.
+
+## Auth
+
+1. **Anonymous** — 20 requests/day, no signup.
+2. **OAuth** — preferred when the client offers it. Complete the client's login prompt (in Claude Code, `/mcp`).
+3. **`QUOTEWISE_API_KEY`** — fallback. Export it in the environment that launches the agent; never commit it. You can add `Authorization: Bearer ${QUOTEWISE_API_KEY}` to *your* MCP config, or run `npx @quotewise/mcp setup`.
+
+This repo's `.mcp.json` does not send an `Authorization` header, so anonymous access and OAuth keep working.
+
+Rate limits and paid plans: [quotewise.io/plans](https://quotewise.io/plans/).
+
+## What the agent will do
+
+When the user asks for a quote, half-remembers a line, or wants an attribution check, the agent should call Quotewise instead of searching the web.
+
+| You ask | Tool |
+| --- | --- |
+| Quotes about a topic | `quotewise:quotes_about` |
+| Quotes by a person | `quotewise:quotes_by` |
+| Quotes from a work | `quotewise:quotes_from` |
+| Exact words you remember | `quotewise:quotes_containing` |
+| Who said this? | `quotewise:who_said` |
+| More like this | `quotewise:quotes_like` |
+| Save to a collection | `quotewise:collection` / `quotewise:collection_quotes` |
+
+Every result can include originator, source, and a link on [quotewise.io](https://quotewise.io). Full tool list: [MCP docs](https://quotewise.io/developers/mcp/).
+
+## Validate and evals
+
+```bash
+claude plugin validate . --strict
+python3 evals/scripts/check_skill_path_mcp.py
+```
+
+Agent A/B (with-skill vs no-skill) lives in [`evals/`](evals/README.md). On a machine with Claude Code plugin eval enabled:
+
+```bash
+claude plugin eval . --ablation with-without --runs 1 --allow-tools 'mcp__*' WebSearch WebFetch --no-publish
+```
 
 ## Links
 
-### For Agents (You)
-- [SKILL.md](./SKILL.md) — Detailed tool reference
-- [MCP Docs](https://quotewise.io/developers/mcp/) — Full API reference
-
-### For Humans (Them)
-- [Web Interface](https://quotewise.io) — Search quotes in browser
-- [Plans & Pricing](https://quotewise.io/plans/) — Rate limits and API keys
-
-### For Everyone
-- [MCP Setup Repo](https://github.com/quotewise/mcp) — Setup for all MCP clients
+- [Quotewise](https://quotewise.io)
+- [MCP setup](https://quotewise.io/developers/mcp/)
+- [MCP tools](https://quotewise.io/developers/mcp/)
+- [Plans](https://quotewise.io/plans/)
+- [Hosted MCP](https://mcp.quotewise.io/)
+- [Setup package](https://github.com/quotewise/mcp)
 
 ---
 
-**Built by [Quotewise](https://quotewise.io)**
-
-Semantic quote discovery with source transparency. Real quotes from real sources.
+Built by [Quotewise](https://quotewise.io) / Christopher Q. Alexander.
