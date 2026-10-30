@@ -130,7 +130,7 @@ Or run `npx @quotewise/mcp setup` for guided configuration.
 
 ✅ **Semantic search** — describe concepts, get relevant quotes
 ✅ **QuoteSightings** — see sources for every quote
-✅ **600K quotes** — contemporary voices, curated collection
+✅ **Curated collection** — classic and contemporary voices
 ✅ **No hallucinations** — real quotes, verified sources
 ✅ **Wikiquote misattributions hidden** — known fakes filtered out
 
