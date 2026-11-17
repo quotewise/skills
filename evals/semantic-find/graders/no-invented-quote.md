@@ -1,5 +1,6 @@
 ---
 type: llm
+focus: trace
 ---
 
 Pass only if the quoted text and originator come from a Quotewise tool result in this session.

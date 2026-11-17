@@ -1,5 +1,6 @@
 ---
 type: llm
+focus: trace
 ---
 
 Pass only if the exact wording and originator come from a Quotewise tool result in this session (phrase search or attribution lookup).

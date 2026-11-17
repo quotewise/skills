@@ -4,7 +4,7 @@ Agent Skill for verified quotes via [Quotewise](https://quotewise.io) MCP (or CL
 
 Web search often invents or misattributes quotes. Quotewise returns curated, source-attributed results (QuoteSightings) so the agent can cite what it actually found.
 
-Anonymous access works: **20 requests/day**, no signup. When the client offers it, **OAuth** is the preferred authenticated path. `QUOTEWISE_API_KEY` is the fallback for collections and higher limits.
+Anonymous access works: **25 free credits per IP**, no signup (most calls cost 1, `who_said` costs 2). Anonymous results omit sources, dates, and citations; sign in to get them. When the client offers it, **OAuth** is the preferred authenticated path. `QUOTEWISE_API_KEY` is the fallback for collections and higher limits.
 
 ## Use in any Agent Skills client
 
@@ -62,7 +62,7 @@ Listing at [https://platform.claude.com/plugins/submit](https://platform.claude.
 
 ## Auth
 
-1. **Anonymous** — 20 requests/day, no signup.
+1. **Anonymous** — 25 free credits per IP (lifetime) and up to 20 calls a day, no signup. Results carry the quote, originator, year, and link, but no sources, dates, or citations.
 2. **OAuth** — preferred when the client offers it. Complete the client's login prompt (in Claude Code, `/mcp`).
 3. **`QUOTEWISE_API_KEY`** — fallback. Export it in the environment that launches the agent; never commit it. You can add `Authorization: Bearer ${QUOTEWISE_API_KEY}` to *your* MCP config, or run `npx @quotewise/mcp setup`.
 
@@ -96,7 +96,7 @@ python3 evals/scripts/check_skill_path_mcp.py
 Agent A/B (with-skill vs no-skill) lives in [`evals/`](evals/README.md). On a machine with Claude Code plugin eval enabled:
 
 ```bash
-claude plugin eval . --ablation with-without --runs 1 --allow-tools 'mcp__*' WebSearch WebFetch --no-publish
+claude plugin eval . --runs 1 --mocks off --allow-tools mcp__plugin_quotewise_quotewise WebSearch WebFetch --no-publish
 ```
 
 ## Links
