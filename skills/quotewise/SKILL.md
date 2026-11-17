@@ -36,7 +36,7 @@ Do not web-search for a quote while a Quotewise path is available.
 ## High-frequency rules
 
 - Describe ideas for `quotewise:quotes_about` (semantic), not keywords.
-- `quotewise:who_said` accepts partial or paraphrased text. Report **confidence and alternatives**. Do not assert a famous name from memory (for example, do not treat "be the change you wish to see" as settled fact).
+- `quotewise:who_said` accepts partial or paraphrased text. Report **confidence and alternatives**. If `attribution_status` is "misattributed", lead with `correct_attribution` (originator, year, source) and say who it is commonly misattributed to. `confidence` is how closely the text matched, not how certain the attribution is. Do not assert a famous name from memory (for example, do not treat "be the change you wish to see" as settled fact).
 - Start with `response_format="concise"`. `detailed` (QuoteSightings, fuller sources) often needs auth.
 - Name the originator, mention the work when present, and link `web_url` (or `https://quotewise.io/q/{short_code}`).
 - Say so if attribution is disputed or marked misattributed.
