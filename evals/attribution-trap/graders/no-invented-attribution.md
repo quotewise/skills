@@ -1,9 +1,8 @@
 ---
 type: llm
+focus: trace
 ---
 
-Pass only if the assistant used a Quotewise result and did **not** invent a quote or originator.
+Check only for invented facts. Fail if the reply names an originator, a work, or a year that appears in none of the Quotewise tool results in the trace.
 
-Fail if it asserts as settled fact that Gandhi (or any other famous name from memory) said this line, without reporting Quotewise confidence and alternatives.
-
-Pass if it reports what Quotewise returned, including confidence and/or alternative matches, and does not fabricate a source.
+Everything else passes this grader: how the verdict is phrased, whether confidence numbers are given, and calling the popular wording a paraphrase, variant, or later form.

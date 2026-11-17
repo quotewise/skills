@@ -8,11 +8,11 @@ Live tool list: [MCP docs](https://quotewise.io/developers/mcp/). This file list
 
 ## Auth
 
-1. **Anonymous** — works with no login (20 requests/day).
+1. **Anonymous** — works with no login: 25 credits per IP (lifetime) and up to 20 calls a day. Most tools cost 1; `who_said`, `quotes_from`, `sources`, and `detailed` calls cost 2. The `metering.quota` field in each response shows what is left. Anonymous results omit source fields (work, dates, citations). `response_format="detailed"`, `quotes_from`, the `from_source` filter, and collection writes return an auth error.
 2. **OAuth** — preferred when the client offers it. Complete the client's login prompt (for example `/mcp` in Claude Code).
 3. **`QUOTEWISE_API_KEY`** — fallback if OAuth is unavailable. Export it in the environment; do not commit it. Adding `Authorization: Bearer ${QUOTEWISE_API_KEY}` to a *user* MCP config is fine. Do not add that header to this repo's `.mcp.json` (an empty/missing key disables OAuth in the Claude adapter).
 
-Collections create/list/add and some `detailed` fields need auth. If a call returns auth or rate-limit errors, tell the user to finish OAuth, set `QUOTEWISE_API_KEY`, or see [plans](https://quotewise.io/plans/).
+If a call returns an auth or rate-limit error, tell the user to finish OAuth, set `QUOTEWISE_API_KEY`, or see [plans](https://quotewise.io/plans/).
 
 `quotewise:status` reports connectivity and auth state.
 
@@ -22,13 +22,13 @@ Collections create/list/add and some `detailed` fields need auth. If a call retu
 | --- | --- | --- |
 | `quotewise:quotes_about` | `about` | Semantic topic search |
 | `quotewise:quotes_by` | `originator` | Fuzzy person name |
-| `quotewise:quotes_from` | `source` | Book, speech, or work |
+| `quotewise:quotes_from` | `source` | Book, speech, or work; needs sign-in |
 | `quotewise:quotes_containing` | `phrase` | Literal text, not semantic |
 | `quotewise:who_said` | `quote` | Attribution; read `confidence` and `alternatives` |
 | `quotewise:quotes_like` | `quote` | `short_code` preferred, or quote text |
 | `quotewise:quote` | `code` | Full record by `short_code` |
 | `quotewise:quote_random` | — | Optional filters |
-| `quotewise:cite_quote` | `quote` | Citation rendering |
+| `quotewise:cite_quote` | `quote` | Citation rendering; premium plans only |
 | `quotewise:originators` | `name` or `search` | People, traditions, institutions |
 | `quotewise:originators_like` | `originator` | Similar thinkers |
 | `quotewise:sources` | `name` or `search` | Works |

@@ -134,16 +134,16 @@ def main() -> int:
     failed = 0
     print("== with-skill (hosted MCP) ==")
     for i, case in enumerate(CASES, start=2):
-        raw, session = mcp_request(
-            {
-                "jsonrpc": "2.0",
-                "id": i,
-                "method": "tools/call",
-                "params": {"name": case["tool"], "arguments": case["arguments"]},
-            },
-            session,
-        )
         try:
+            raw, session = mcp_request(
+                {
+                    "jsonrpc": "2.0",
+                    "id": i,
+                    "method": "tools/call",
+                    "params": {"name": case["tool"], "arguments": case["arguments"]},
+                },
+                session,
+            )
             if "error" in raw:
                 raise ValueError(raw["error"])
             hit = first_result(raw)
@@ -152,6 +152,9 @@ def main() -> int:
             if not code or "quotewise.io/q/" not in str(url):
                 raise ValueError(f"missing short_code/web_url: {hit!r}")
             print(f"PASS {case['name']} {case['tool']} short_code={code} url={url}")
+        except urllib.error.HTTPError as exc:  # auth and quota errors come back as 401 with the reason in the body
+            failed += 1
+            print(f"FAIL {case['name']} {case['tool']}: HTTP {exc.code} {exc.read().decode()[:300]}", file=sys.stderr)
         except Exception as exc:  # noqa: BLE001 — report and continue
             failed += 1
             print(f"FAIL {case['name']} {case['tool']}: {exc}", file=sys.stderr)

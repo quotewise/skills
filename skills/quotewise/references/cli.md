@@ -15,7 +15,7 @@ command -v "${QW%% *}" >/dev/null || { echo "Quotewise CLI not found"; exit 1; }
 
 ## Auth
 
-Same policy as MCP: anonymous (20 requests/day) works; **OAuth** is preferred when the CLI offers a login; `QUOTEWISE_API_KEY` is the fallback. Never write a key into the repo or a committed config.
+Same policy as MCP: anonymous (25 credits per IP) works; **OAuth** is preferred when the CLI offers a login; `QUOTEWISE_API_KEY` is the fallback. Never write a key into the repo or a committed config.
 
 ## Commands
 
