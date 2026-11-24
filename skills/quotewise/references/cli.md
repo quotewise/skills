@@ -1,34 +1,59 @@
-# Quotewise CLI (when MCP is absent)
+# Quotewise CLI equivalents (no MCP in the session)
 
-Use the CLI only when Quotewise MCP tools are **not** in this session — scripts, CI, or any agent without those tools. If `quotewise:…` tools are available, stop and use MCP instead (do not invent CLI flags to duplicate a live MCP tool).
+Use only when `quotewise:` tools are absent. Output is JSON.
 
-## Resolve the binary
-
-1. If `$QW_CLI` is set, run that command.
-2. Else if `quotewise` is on `PATH`, use it.
-3. Else say the CLI is not installed. Do **not** invent an install package or download URL.
+## Find the binary
 
 ```bash
 QW="${QW_CLI:-quotewise}"
-command -v "${QW%% *}" >/dev/null || { echo "Quotewise CLI not found"; exit 1; }
+command -v "${QW%% *}" >/dev/null || echo "Quotewise CLI not found"
 ```
 
-## Auth
+Not installed: say so and point to https://github.com/quotewise/cli (releases) or the MCP setup at
+https://quotewise.io/developers/mcp/. Do not fall back to memory or web search for quotes.
 
-Same policy as MCP: anonymous (25 credits per IP) works; **OAuth** is preferred when the CLI offers a login; `QUOTEWISE_API_KEY` is the fallback. Never write a key into the repo or a committed config.
+Auth: `"$QW" auth-status`. Not signed in: `"$QW" login` (browser) or `QUOTEWISE_API_KEY` in the
+environment. Never write a key to a file.
 
-## Commands
+Flags change between releases. Run `"$QW" <command> --help` before the first use of a command, and
+`"$QW" schema --operation <operationId>` for a request body.
 
-A public `quotewise` / `$QW_CLI` command surface was **not verified** from published docs or npm at the time this file was written (no `@quotewise/cli` package; [developers/cli](https://quotewise.io/developers/cli/) is not a live page). Do not guess flags.
+## Commands by workflow step
 
-When the binary exists:
+| Step | MCP | CLI |
+|---|---|---|
+| Access | `status` | `auth-status` |
+| List collections | `collection(list)` | `collections-list --fields name,slug,is_default,quote_count` |
+| Semantic search in one collection | `collection_quotes(list, about=)` | `quotes-similar-by-text --text "<claim>" --collection <slug>` |
+| Substring search in one collection | n/a | `collections-quotes-list <slug> --q "<words>"` |
+| Semantic search, corpus | `quotes_about` | `quotes-similar-by-text --text "<claim>"` |
+| By a person | `quotes_by` | `originators-search`, then `originators-quotes <slug>` |
+| Similar people | `originators_like` | `originators-similar <slug>` |
+| More like a quote | `quotes_like` | `quotes-similar <short_code>` |
+| Exact words | `quotes_containing` | `quotes-list --q "<words>"` (substring) |
+| Random | `quote_random` | `quotes-random` |
+| Variants and translations | `quote_relations` | `quotes-relations <short_code>` |
+| Filtered listing | search filters | `quotes-list --length short --max-chars 280 --originator-slug <slug>` |
+| Full record | `quote` | `quotes-get <short_code>` |
+| Collections holding a quote | `quote(include=["collections"])` | `quotes-collections <short_code>` |
+| Create a collection | `collection(create)` | `collections-create --body-file -` |
+| Save a quote with a note | `collection_quotes(add, notes=)` | `collections-quotes-add <slug> --body-file -` |
+| Change a note | remove, then add | `collections-quote-patch` (see its `--help`) |
 
-1. Run `"$QW" --help` (or the equivalent the binary prints) and follow that output.
-2. Prefer the same tool names as MCP (`quotes_about`, `who_said`, `quotes_containing`, …) if the CLI exposes them.
-3. Ask for JSON when the CLI supports it, so `short_code` / `web_url` / QuoteSightings can be cited.
+`quotes-list --q` is substring match, not semantic. Use `quotes-similar-by-text` for meaning.
 
-If help does not document a quote-search command, stop. Point the user at [MCP setup](https://quotewise.io/developers/mcp/) or the [REST API](https://api.quotewise.io/docs/) rather than inventing a CLI invocation.
+## Bodies
 
-## Still never invent
+```bash
+echo '{"name": "Draft: The Authority Paradox", "description": "Candidates, Dec 2026"}' \
+  | "$QW" collections-create --body-file -
 
-CLI or MCP: never invent a quote, originator, or source. Cite what the tool returned (`web_url` / `https://quotewise.io/q/{short_code}`).
+echo '{"short_code": "abc123", "notes": "The Authority Paradox · epigraph · top · raises the trust question"}' \
+  | "$QW" collections-quotes-add <slug> --body-file -
+```
+
+Trim list output with `--fields text,short_code,originator_name --first 10`.
+
+There is no CLI command for an attribution check (`who_said`). Find the record by its words and
+report what it shows. CLI or MCP, the rules in SKILL.md hold: never invent a quote, originator or
+source.
