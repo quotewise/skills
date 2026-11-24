@@ -1,6 +1,6 @@
 # Quotewise Agent Skill
 
-Agent Skill for verified quotes via [Quotewise](https://quotewise.io) MCP (or CLI when MCP is not in the session).
+One Agent Skill for finding, checking and tracking quotations with [Quotewise](https://quotewise.io) MCP (or CLI when MCP is not in the session). It works with a person in the conversation and as an unattended bot.
 
 Web search often invents or misattributes quotes. Quotewise returns curated, source-attributed results (QuoteSightings) so the agent can cite what it actually found.
 
@@ -12,9 +12,13 @@ Point the client at `skills/quotewise/`. Any environment that understands Agent 
 
 ```
 skills/quotewise/
-  SKILL.md
-  references/mcp.md
-  references/cli.md
+  SKILL.md                    rules, who is driving, lookup, writing workflow
+  references/mcp.md           tools, filters, auth
+  references/cli.md           CLI equivalents
+  references/jobs.md          what a quote does in a piece, and how to search for it
+  references/collections.md   candidates, used-quotes ledger, plan limits
+  references/pull-quote.md    the writer's own quotable line
+  references/unattended.md    scheduled jobs, pipelines, platform bots
 ```
 
 Optional MCP setup (any MCP client):
@@ -74,6 +78,25 @@ Rate limits and paid plans: [quotewise.io/plans](https://quotewise.io/plans/).
 
 When the user asks for a quote, half-remembers a line, or wants an attribution check, the agent should call Quotewise instead of searching the web.
 
+Beyond lookup, the skill covers three jobs:
+
+- **Quotes for a piece of writing.** It settles what the quote has to do (epigraph, borrowed authority, evidence, counterpoint, closer, a quote to post), searches your saved collections first, then the corpus, and returns a shortlist of three to five with source, link and flags. "No quote" is a valid answer.
+- **Not repeating yourself.** Signed in, it keeps candidates per piece and a `Quotes I've used` ledger in your Quotewise collections. On a plan with one collection it keeps the same record in notes.
+- **Your own quotable line.** It finds the one sentence of your draft worth quoting, tests it, checks whether someone already said it, and says where to state it. It asks questions; it does not write the line for you.
+
+### People and bots
+
+The skill asks one question of itself: can it ask a person and get a reply in this session?
+
+| | A person is in the conversation | Unattended (scheduled job, pipeline, platform bot) |
+| --- | --- | --- |
+| Something is missing | Asks | Infers it and states the assumption |
+| Result | A shortlist; you choose | One pick, plus runners-up |
+| Collection writes | Offers once | Only when its instructions say so |
+| Sign-in or plan limit | Says it once | Reports it as a fact; no upgrade pitch in public posts |
+
+A bot that posts on a schedule needs `QUOTEWISE_API_KEY`: anonymous access has no sources and no collections, so it cannot keep a ledger.
+
 | You ask | Tool |
 | --- | --- |
 | Quotes about a topic | `quotewise:quotes_about` |
@@ -84,7 +107,11 @@ When the user asks for a quote, half-remembers a line, or wants an attribution c
 | More like this | `quotewise:quotes_like` |
 | Save to a collection | `quotewise:collection` / `quotewise:collection_quotes` |
 
-Every result can include originator, source, and a link on [quotewise.io](https://quotewise.io). Full tool list: [MCP docs](https://quotewise.io/developers/mcp/).
+Every result names the originator, with the source when you are signed in, and links to its page on [quotewise.io](https://quotewise.io). Full tool list: [MCP docs](https://quotewise.io/developers/mcp/).
+
+## Contributing
+
+Install the skill, use it, and open a pull request against `skills/quotewise/` when it gets something wrong. Keep `SKILL.md` under 200 lines; detail goes in `references/`, one level deep.
 
 ## Validate and evals
 

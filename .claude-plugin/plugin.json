@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "quotewise",
   "displayName": "Quotewise",
-  "version": "2.0.0",
-  "description": "Agent Skill for verified quotes via Quotewise MCP (or CLI when MCP is absent). Use when the user asks for a quote, wants attribution, asks who said a line, suspects a quote is misattributed, or half-remembers a phrase.",
+  "version": "3.0.0",
+  "description": "Agent Skill for Quotewise MCP (or CLI when MCP is absent): look up quotes, check who said a line, find a sourced quote for a piece of writing, track what has been used, and find the writer's own pull quote. Works with a person in the conversation or as an unattended bot.",
   "author": {
     "name": "Christopher Q. Alexander",
     "email": "q@quotewise.io",
@@ -12,5 +12,5 @@
   "homepage": "https://quotewise.io/developers/mcp/",
   "repository": "https://github.com/quotewise/skills",
   "license": "MIT",
-  "keywords": ["quotes", "attribution", "mcp", "research", "citations"]
+  "keywords": ["quotes", "attribution", "mcp", "research", "citations", "writing", "epigraph"]
 }
